@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xem Anh</title>
+  <style>
+    :root {
+      --page-bg: #f6f1e8;
+      --panel-bg: rgba(255, 255, 255, 0.9);
+      --panel-border: rgba(68, 50, 29, 0.1);
+      --text-color: #2e241c;
+      --muted-color: #726253;
+      --shadow: 0 24px 60px rgba(66, 49, 31, 0.12);
+      --radius: 26px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-color);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.9), transparent 36%),
+        linear-gradient(180deg, #f8f4ed 0%, var(--page-bg) 100%);
+    }
+
+    .viewer {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: clamp(10px, 1.8vw, 14px);
+      border: 1px solid var(--panel-border);
+      border-radius: calc(var(--radius) + 4px);
+      background: var(--panel-bg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .image-shell {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fffdfa;
+    }
+
+    .main-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .status {
+      display: none;
+      padding: 24px 18px;
+      text-align: center;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted-color);
+    }
+
+    .viewer.is-error .image-shell {
+      display: none;
+    }
+
+    .viewer.is-error .status {
+      display: block;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      body {
+        padding: 24px;
+      }
+
+      .viewer {
+        width: min(92vw, 1200px);
+      }
+    }
+
+    @media (hover: none), (pointer: coarse), (max-width: 767px) {
+      body {
+        padding: 0;
+        display: block;
+      }
+
+      .viewer {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+      }
+
+      .image-shell {
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="viewer" id="viewer">
+      <div class="image-shell">
+        <picture>
+          <source
+            id="desktopSource"
+            media="(hover: hover) and (pointer: fine) and (min-width: 768px)"
+          >
+          <img
+            class="main-image"
+            id="mainImage"
+            alt="Bang gia"
+            loading="eager"
+            decoding="async"
+          >
+        </picture>
+      </div>
+      <p class="status" id="status">Khong tai duoc anh. Vui long kiem tra lai link anh.</p>
+    </section>
+  </main>
+
+  <script>
+    const DESKTOP_IMAGE_URL = "https://sf-static.upanhlaylink.com/img/image_20260331bb313f6c6529d9f48fed9f3f4bdf3d0c.jpg";
+    const MOBILE_IMAGE_URL = "https://sf-static.upanhlaylink.com/img/image_20260331814742338bfcf343cb1d7a1c228a097d.jpg";
+
+    const viewer = document.getElementById("viewer");
+    const desktopSource = document.getElementById("desktopSource");
+    const mainImage = document.getElementById("mainImage");
+    const status = document.getElementById("status");
+
+    desktopSource.srcset = DESKTOP_IMAGE_URL;
+    mainImage.src = MOBILE_IMAGE_URL;
+
+    function showError() {
+      viewer.classList.add("is-error");
+      status.hidden = false;
+    }
+
+    mainImage.addEventListener("error", showError);
+
+    if (mainImage.complete) {
+      if (!mainImage.naturalWidth) {
+        showError();
+      }
+    }
+  </script>
+</body>
+</html>
